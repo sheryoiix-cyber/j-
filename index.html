@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>J  I · Wedding Surprise + Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        cursor: none;
+    }
+    body {
+        font-family: 'Poppins', 'Noto Nastaliq Urdu', sans-serif;
+        background: #0a0a0f;
+        color: white;
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+    }
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: radial-gradient(circle at 20% 30%, rgba(255,0,110,0.12) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(131,56,236,0.08) 0%, transparent 50%);
+        z-index: -2;
+    }
+    .hearts-bg {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    }
+    .falling-heart {
+        position: absolute;
+        color: #ff006e;
+        opacity: 0.25;
+        animation: fall linear infinite;
+        font-size: 12px;
+    }
+    @keyframes fall {
+        0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+        10% { opacity: 0.25; }
+        100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    .page {
+        width: 100%;
+        min-height: 100vh;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        position: relative;
+        z-index: 5;
+    }
+    .page.active { display: flex; }
+
+    .journey-badge {
+        border: 1px solid #ff006e;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        display: inline-block;
+        margin-bottom: 30px;
+        color: #ff006e;
+        font-family: 'Poppins', sans-serif;
+        background: rgba(0,0,0,0.3);
+    }
+    .pink-btn {
+        background: #ff006e;
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 0 25px rgba(255,0,110,0.4);
+        transition: 0.3s;
+        font-family: 'Noto Nastaliq Urdu', sans-serif;
+    }
+    .pink-btn:hover { transform: scale(1.05); box-shadow: 0 0 35px rgba(255,0,110,0.6); }
+
+    /* PAGE 1 - WELCOME */
+    #page1 { padding: 60px 20px 40px; }
+    .welcome-text {
+        font-family: 'Noto Nastaliq Urdu', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.8;
+        text-align: center;
+    }
+    .welcome-text .fav, .welcome-text .place { color: #ff006e; }
+    .sub-text {
+        margin-top: 15px;
+        font-size: 1.1rem;
+        opacity: 0.7;
+        text-align: center;
+        font-family: 'Noto Nastaliq Urdu', sans-serif;
+    }
+    .sub-text .you { color: #ff006e; font-weight: 600; }
+    .names {
+        font-family: 'Noto Nastaliq Urdu', serif;
+        font-size: 2rem;
+        margin-top: 25px;
+        text-align: center;
+    }
+    .eng-trans {
+        display: block;
+        font-size: 0.8rem;
+        opacity: 0.6;
+        font-family: 'Poppins', sans-serif;
+        margin-top: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    .timeline {
+        position: relative;
+        max-width: 600px;
+        width: 100%;
+        margin: 60px auto 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        right: 15px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #ff006e;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 40px;
+        padding-right: 50px;
+    }
+    .timeline-dot {
+        position: absolute;
+        right: 8px;
+        top: 5px;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ff006e;
+        border-radius: 50%;
+        background: #0a0a0f;
+    }
+    .timeline-dot::after {
+        content: '';
+        color: #ff006e;
+        font-size: 8px;
+        position: absolute;
+        top: 2px;
+        right: 3px;
+    }
+    .timeline-card {
+        border: 1px solid rgba(255,0,110,0.2);
+        border-radius: 15px;
+        padding: 25px;
+        background: rgba(15,15,25,0.5);
+        backdrop-filter: blur(5px);
+    }
+    .timeline-card .label {
+        color: #ff006e;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        font-family: 'Poppins', sans-serif;
+    }
+    .timeline-card h3 {
+        font-family: 'Noto Nastaliq Urdu', serif;
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+    }
+    .timeline-card p {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        opacity: 0.8;
+        font-family: 'Noto Nastaliq Urdu', sans-serif;
+    }
+
+    /* PROMISE PAGES */
+    .promise-page {
+        justify-content: center;
+        text-align: center;
+        background: radial-gradient(circle at center, rgba(255,0,110,0.05) 0%, transparent 70%);
+        position: relative;
+    }
+    .emoji-face { font-size: 4.5rem; margin-bottom: 25px; animation: floatPulse 2s infinite; }
+    @keyframes floatPulse { 0%,100% { transform: scale(1) translateY(0); } 50% { transform: scale(1.1) translateY(-8px); } }
+    .promise-page h2 {
+        font-family: 'Noto Nastaliq Urdu', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        line-height: 1.8;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    .promise-page h2 .pink { color: #ff006e; text-shadow: 0 0 8px rgba(255,0,110,0.5); }
+    .promise-page h2 .small-text {
+        font-size: 1.2rem;
+        display: block;
+        margin-top: 15px;
+        opacity: 0.8;
+    }
+    .btn-container {
+        margin-top: 50px;
+        display: flex;
+        position: relative;
+        width: 360px;
+        height: 100px;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0,0,0,0.2);
+        border-radius: 60px;
+        z-index: 5;
+    }
+    .btn-yes {
+        background: linear-gradient(135deg, #00d9a3, #00b386);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+        position: relative;
+        margin: 0 auto;
+        transition: 0.2s ease;
+        z-index: 10;
+        box-shadow: 0 0 20px rgba(0,217,163,0.5);
+        min-width: 100px;
+    }
+    .btn-yes:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0,217,163,0.8);
+    }
+    .btn-no {
+        background: linear-gradient(135deg, #ff4757, #c0392b);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+        position: fixed;
+        z-index: 1000;
+        box-shadow: 0 0 15px rgba(255,71,87,0.5);
+        transition: left 0.2s ease, top 0.2s ease;
+        min-width: 100px;
+        text-align: center;
+    }
+    .attempt-counter {
+        margin-top: 35px;
+        font-size: 0.8rem;
+        opacity: 0.5;
+        font-family: monospace;
+        letter-spacing: 1px;
+    }
+    .magic-message {
+        margin-top: 20px;
+        font-size: 0.85rem;
+        color: #ffd966;
+        background: rgba(0,0,0,0.6);
+        padding: 8px 18px;
+        border-radius: 40px;
+        display: inline-block;
+        backdrop-filter: blur(4px);
+    }
+
+    /* PAGE 4 - I KNEW IT */
+    #page4 { justify-content: center; text-align: center; }
+    .heart-sparkle { font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px #ff006e); animation: beat 1s infinite; }
+    @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+    #page4 h2 { font-family: 'Noto Nastaliq Urdu', serif; font-size: 2.3rem; color: #ff006e; margin-bottom: 15px; }
+    #page4 p { font-size: 1.1rem; opacity: 0.8; margin-bottom: 40px; }
+
+    /* PAGE 5 - KEY with show/hide */
+    #page5 { justify-content: center; }
+    .key-card { width: 90%; max-width: 400px; text-align: center; }
+    .key-card p { font-size: 1rem; opacity: 0.7; margin-bottom: 30px; }
+    .key-input-box {
+        position: relative;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+    .key-input-box input {
+        width: 100%;
+        padding: 18px 90px 18px 18px;
+        font-size: 1rem;
+        border: 1px solid #ff006e;
+        border-radius: 50px;
+        background: rgba(0,0,0,0.4);
+        color: white;
+        outline: none;
+        font-family: 'Poppins', sans-serif;
+    }
+    .key-input-box .lock-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        pointer-events: none;
+    }
+    .key-input-box .toggle-password {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 1.2rem;
+        background: none;
+        border: none;
+        color: #ff006e;
+        z-index: 10;
+        padding: 5px;
+    }
+    .error { color: #ffeb3b; margin-bottom: 20px; display: none; font-size: 0.9rem; }
+
+    /* PAGE 6 - FINAL HEART */
+    #page6 { justify-content: center; text-align: center; }
+    .home-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 10px 20px;
+        border-radius: 50px;
+        color: white;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-family: 'Noto Nastaliq Urdu', sans-serif;
+        z-index: 20;
+        backdrop-filter: blur(5px);
+    }
+    .final-heart {
+        font-size: 7rem;
+        filter: drop-shadow(0 0 30px #ff006e);
+        animation: heartBeat 1.5s infinite;
+        cursor: pointer;
+        margin: 20px 0;
+        transition: 0.2s;
+    }
+    .final-heart:hover { transform: scale(1.1); }
+    @keyframes heartBeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    /* PAGE 7 - GALLERY */
+    #page7 { padding: 80px 20px 100px; }
+    #page7 h2 { font-family: 'Noto Nastaliq Urdu', serif; font-size: 2rem; margin-bottom: 10px; text-align: center; }
+    .subtitle { text-align: center; opacity: 0.7; margin-bottom: 30px; }
+    .gallery { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; max-width: 500px; }
+    .gallery-card {
+        border: 1px solid rgba(255,0,110,0.2);
+        border-radius: 15px;
+        padding: 25px;
+        background: rgba(15,15,25,0.5);
+        text-align: center;
+        backdrop-filter: blur(4px);
+    }
+    .gallery-card h3 { font-family: 'Noto Nastaliq Urdu', serif; font-size: 1.8rem; margin-bottom: 5px; }
+    .gallery-card .pink { color: #ff006e; }
+    .gallery-card .small { font-size: 0.85rem; opacity: 0.6; letter-spacing: 1px; margin-top: 10px; font-family: 'Poppins', sans-serif; }
+    .gallery img, .gallery video { width: 100%; border-radius: 10px; margin-top: 15px; max-height: 400px; object-fit: cover; }
+    
+    /* ADMIN PANEL */
+    .admin-panel { 
+        display: block;
+        border: 1px solid rgba(255,0,110,0.3); 
+        padding: 25px; 
+        border-radius: 15px; 
+        background: rgba(10,10,15,0.9); 
+        width: 95%; 
+        max-width: 500px; 
+        backdrop-filter: blur(8px);
+        margin: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    #adminPage {
+        justify-content: center;
+        position: fixed;
+        top:0;
+        left:0;
+        width:100%;
+        background: rgba(0,0,0,0.95);
+        z-index: 200;
+        display: none;
+        padding: 20px;
+    }
+    #adminPage.active {
+        display: flex;
+    }
+    .admin-panel input, .admin-panel textarea { width: 100%; padding: 12px; font-size: 0.95rem; border: 1px solid rgba(255,0,110,0.4); border-radius: 10px; background: rgba(0,0,0,0.5); color: white; margin: 8px 0; outline: none; }
+    .admin-panel input[type="file"] { padding: 8px; }
+    .media-item { background: rgba(255,255,255,0.08); padding: 10px; margin: 8px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+    .delete-btn { background: #ff006e; color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; }
+    .note-text { font-size: 0.7rem; opacity: 0.7; margin-top: 5px; }
+    .success-msg { color: #00d9a3; font-size: 0.8rem; margin-top: 8px; }
+    .sound-item { 
+        border: 1px solid rgba(255,0,110,0.2); 
+        border-radius: 10px; 
+        padding: 15px; 
+        margin: 10px 0; 
+        background: rgba(0,0,0,0.3);
+    }
+    .sound-item h4 { color: #ff006e; margin-bottom: 8px; font-family: 'Noto Nastaliq Urdu', sans-serif; }
+    .sound-item .btn-sm {
+        background: #333;
+        border: none;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        margin: 2px;
+    }
+    .sound-item .btn-sm:hover { background: #555; }
+    .sound-item .btn-sm.play-btn { background: #00d9a3; }
+    .sound-item .btn-sm.play-btn:hover { background: #00b386; }
+    .sound-item .btn-sm.remove-btn { background: #ff4757; }
+    .sound-item .btn-sm.remove-btn:hover { background: #c0392b; }
+    .sound-item .status { font-size: 0.7rem; opacity: 0.6; margin-left: 10px; }
+    .sound-item input[type="file"] { margin: 5px 0; }
+    .sound-item input[type="text"] { margin: 5px 0; padding: 8px; font-size: 0.9rem; }
+    
+    /* SPIDER CURSOR CANVAS */
+    #spiderCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        pointer-events: none;
+        z-index: 99999;
+    }
+    @media (max-width: 600px) {
+        .btn-container { width: 300px; height: 90px; }
+        .btn-yes, .btn-no { padding: 10px 20px; font-size: 1rem; min-width: 80px; }
+        .key-input-box input { padding: 14px 70px 14px 40px; }
+        .admin-panel { padding: 15px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- PAGE 1 - WELCOME (UPDATED FUNNY TIMELINE) -->
+<div class="page active" id="page1">
+  <div class="journey-badge">     <span class="eng-trans"> Beautiful Wedding Gift </span></div>
+  <div class="welcome-text">
+      <span class="fav"></span>  <br> <span class="place"></span>   
+    <span class="eng-trans">Welcome to a place filled with fun & <span style="color:#ff006e;">surprise</span></span>
+  </div>
+  <div class="sub-text">
+        <span class="you"> </span>      
+    <span class="eng-trans">Because all this is made just for both of you</span>
+  </div>
+  <div class="names">J  I</div>
+
+  <div class="timeline">
+    <!-- First timeline item - Funny -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="label">     <span class="eng-trans">(First Lesson of Marriage)</span></div>
+        <h3>   <span class="eng-trans">· Importance of the Broom</span></h3>
+        <p>             !<span class="eng-trans">After marriage, the broom will be your best friend. Learn to embrace it!</span></p>
+      </div>
+    </div>
+    <!-- Second timeline item - Funny -->
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="label">     <span class="eng-trans">(Second Lesson of Marriage)</span></div>
+        <h3>   <span class="eng-trans">· The Art of Broom</span></h3>
+        <p>              !<span class="eng-trans">Now you have to play with the broom. This is a test of your love!</span></p>
+      </div>
+    </div>
+  </div>
+
+  <button class="pink-btn" id="page1StartBtn">    <span style="font-size:0.7rem;">Start Game</span></button>
+</div>
+
+<!-- PAGE 2 - QUESTION 1 (CLEAN - NO ESCAPING TEXT) -->
+<div class="page promise-page" id="page2">
+  <div class="journey-badge">    <span class="eng-trans"> The Most Important Question </span></div>
+  <div class="emoji-face"></div>
+  <h2>
+      !   <br>
+      <span class="pink"> </span>    
+    <span class="eng-trans" style="font-size:1rem; margin-top:10px;">Muhammad Jameel Khan! Are you ready to hold the broom forever?</span>
+  </h2>
+  <div class="btn-container">
+    <button class="btn-yes" id="yesBtnPage2">YES</button>
+  </div>
+  <button class="btn-no" id="noBtnPage2">NO</button>
+  <div class="attempt-counter" id="counterPage2"> Failed escape attempts: 0</div>
+  <div class="magic-message" id="magicPage2"></div>
+</div>
+
+<!-- PAGE 3 - QUESTION 2 -->
+<div class="page promise-page" id="page3">
+  <div class="journey-badge">    <span class="eng-trans"> Eternal Promise </span></div>
+  <div class="emoji-face"></div>
+  <h2>
+           ...<br>
+          <span class="pink"></span>  <span class="pink"></span>  <br>
+    <span class="small-text">            </span>
+    <span class="eng-trans" style="font-size:1rem;">In this beautiful new life of marriage... will you always take care of each other?<br> (A relationship blooms with love & respect)</span>
+  </h2>
+  <div class="btn-container">
+    <button class="btn-yes" id="yesBtnPage3">YES</button>
+  </div>
+  <button class="btn-no" id="noBtnPage3">NO</button>
+  <div class="attempt-counter" id="counterPage3"> Failed escape attempts: 0</div>
+  <div class="magic-message" id="magicPage3"></div>
+</div>
+
+<!-- PAGE 4 - CONFIRMATION -->
+<div class="page" id="page4">
+  <div class="heart-sparkle"></div>
+  <h2>    !<span class="eng-trans">I knew it!</span></h2>
+  <p>                <span class="eng-trans">Your answer matches our hopes. May Allah bless your union.</span></p>
+  <button class="pink-btn" id="page4UnlockBtn">      <span style="font-size:0.7rem;">Unlock Surprise</span></button>
+</div>
+
+<!-- PAGE 5 - SECRET KEY with Show/Hide -->
+<div class="page" id="page5">
+  <div class="key-card">
+    <p>     ...<br>      ...<span class="eng-trans">Enter the secret code of the heart... known only to special guests...</span></p>
+    <div class="key-input-box">
+      <span class="lock-icon"></span>
+      <input type="password" id="accessKey" placeholder="  ... / Secret code...">
+      <span class="toggle-password" id="toggleKeyVisibility"></span>
+    </div>
+    <p class="error" id="errorMsg">  !     <span class="eng-trans">Wrong code! Try again</span></p>
+    <button class="pink-btn" id="keyUnlockBtn" style="width:100%;">    / UNLOCK</button>
+  </div>
+</div>
+
+<!-- PAGE 6 - FINAL HEART -->
+<div class="page" id="page6">
+  <button class="home-btn" onclick="goHome()">  / HOME</button>
+  <div class="journey-badge">   <span class="eng-trans"> Final Surprise </span></div>
+  <h2 style="font-family:'Noto Nastaliq Urdu',serif; font-size:2.2rem; margin:20px 0;">    <span class="eng-trans">Our memories & gifts</span></h2>
+  <p style="opacity:0.7; margin-bottom:30px;">       ...<span class="eng-trans">Click the heart to see the surprise...</span></p>
+  <div class="final-heart" id="
